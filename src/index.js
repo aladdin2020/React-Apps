@@ -14,11 +14,8 @@ class App extends React.Component {
         console.log(err);
       }
     );
-    return (
-      <div>
-        <SeasonDisplay />
-      </div>
-    );
+    //those changes were made at the start of ch.04
+    return <div></div>;
   }
 }
 
