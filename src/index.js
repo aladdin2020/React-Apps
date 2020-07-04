@@ -1,19 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import SeasonDisplay from "./seasonDisplay";
+import SeasonDisplay from "./SeasonDisplay";
+import Spinner from "./Spinner.js";
 
 //we don't add () to the class , {note to self}
 class App extends React.Component {
-  constructor(props) {
-    //defining super is a mandatory in every constructor
-    super(props);
+  //
+  //the easy way to define a state{}, babel is smart enough to take care of the rest for us!!
+  state = {
+    lat: null,
+    errMsg: null,
+  };
 
-    //initializing the state
-    this.state = {
-      lat: null,
-      errMsg: null,
-    };
-
+  //a function that's called once the render() method was completed
+  componentDidMount() {
     //getting the user's location
     window.navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -21,19 +21,15 @@ class App extends React.Component {
         this.setState({ lat: position.coords.latitude });
       },
       (err) => {
+        //displaying the error msg in the state, if found ofcourse
         this.setState({ errMsg: err.message });
       }
     );
   }
 
-  //we use a conditional render here for the different cases!
-  render() {
+  renderContent() {
     if (this.state.lat && !this.state.errMsg) {
-      return (
-        <div style={{ marginTop: "100px" }}>
-          my position is: {this.state.lat}
-        </div>
-      );
+      return <SeasonDisplay lat={this.state.lat} />;
     }
     if (!this.state.lat && this.state.errMsg) {
       return (
@@ -44,7 +40,12 @@ class App extends React.Component {
       );
     }
 
-    return <div style={{ marginTop: "100px" }}>no data to display !!</div>;
+    return <Spinner msg="please press OK" />;
+  }
+
+  //we use a conditional render here for the different cases!
+  render() {
+    return <div>{this.renderContent()}</div>;
   }
 }
 
